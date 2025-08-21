@@ -1,0 +1,42 @@
+# Build artifacts
+*.o
+*.a
+*.so
+*.out
+*.exe
+
+# Object and build directories
+obj/
+build/
+bin/
+
+# clangd / ccls / language server cache
+.cache/
+.ccls-cache/
+
+# Compiler intermediate files
+*.d
+*.dep
+
+# Debug / profiling files
+*.gch
+*.gcda
+*.gcno
+*.gcov
+
+# Editor swap/backup files
+*~
+*.swp
+*.swo
+*.bak
+
+# Logs
+*.log
+
+# OS-specific junk
+.DS_Store
+Thumbs.db
+
+# Generated headers or files (if any)
+*.generated.*
+

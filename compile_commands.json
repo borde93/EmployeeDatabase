@@ -1,0 +1,41 @@
+[
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-c",
+      "-Iinclude",
+      "-o",
+      "obj/file.o",
+      "src/file.c"
+    ],
+    "directory": "/home/enrico/c_programming/final-project",
+    "file": "/home/enrico/c_programming/final-project/src/file.c",
+    "output": "/home/enrico/c_programming/final-project/obj/file.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-c",
+      "-Iinclude",
+      "-o",
+      "obj/main.o",
+      "src/main.c"
+    ],
+    "directory": "/home/enrico/c_programming/final-project",
+    "file": "/home/enrico/c_programming/final-project/src/main.c",
+    "output": "/home/enrico/c_programming/final-project/obj/main.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-c",
+      "-Iinclude",
+      "-o",
+      "obj/parse.o",
+      "src/parse.c"
+    ],
+    "directory": "/home/enrico/c_programming/final-project",
+    "file": "/home/enrico/c_programming/final-project/src/parse.c",
+    "output": "/home/enrico/c_programming/final-project/obj/parse.o"
+  }
+]
