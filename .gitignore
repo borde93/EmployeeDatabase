@@ -1,0 +1,6 @@
+bin/
+object/
+*json
+Makefile
+*.db
+
