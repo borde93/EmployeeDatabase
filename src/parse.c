@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <arpa/inet.h>
@@ -87,12 +88,11 @@ int validate_db_header(int fd, struct dbheader_t **headerOut){
     *headerOut = header;
 
    return STATUS_GOOD; 
-};
+}
 
 
 
 int output_file(int fd, struct dbheader_t *dbhdr, struct  employee_t *employees){
-    
     if(fd < 0){
         printf("Got a bad FD from the user while ouputting to file\n");
         return STATUS_ERROR;
@@ -101,19 +101,29 @@ int output_file(int fd, struct dbheader_t *dbhdr, struct  employee_t *employees)
     int nEmployees = dbhdr->count;
 
     dbhdr->magic = htonl(dbhdr->magic);
-    dbhdr->count = htons(dbhdr->count + (sizeof(struct employee_t) * nEmployees));
-    dbhdr->filesize = htonl(dbhdr->filesize);
+    dbhdr->count = htons(dbhdr->count);
+    dbhdr->filesize = htonl(sizeof(struct dbheader_t) + sizeof(struct employee_t) * nEmployees);
     dbhdr->version = htons(dbhdr->version);
 
     lseek(fd, 0, SEEK_SET); //setting cursor to the beginning of the file to write the header
 
     if((write(fd, dbhdr, sizeof(struct dbheader_t))) == -1){
-       printf("Cannot write to file. \n");
+       printf("Cannot write header to file. \n");
         perror("write");
         return STATUS_ERROR;
     }
-    
-    return STATUS_GOOD;
+    printf("Header written succesfully\n");
+    int i = 0;
+    for(i = 0; i < nEmployees; i++){
+      employees[i].hours = htonl(employees[i].hours);
+    if((write(fd, &employees[i], sizeof(struct employee_t))) == -1){
+            printf("Cannot write employee to file. \n");
+            perror("write");
+            return STATUS_ERROR;
+        }
+    }
+
+        return STATUS_GOOD;
 }
 
 
@@ -128,15 +138,15 @@ int read_employees(int fd, struct dbheader_t *dbhdr, struct employee_t **employe
         return STATUS_ERROR;
     }
 
-    int count = dbhdr.count;
+   int count = dbhdr->count;
 
-   struct employee_t *employees = calloc(count, sizeof(employeesOut));
+   struct employee_t *employees = calloc(count, sizeof(struct employee_t));
     if(employees == NULL){
         printf("Calloc failed in read_employees\n");
         return STATUS_ERROR;
     }
     
-    if((read(fd, employees, count * sizeof(employees))) == -1){:w
+    if((read(fd, employees, count * sizeof(struct employee_t))) == -1){
         printf("Failed to read employees on file. \n");
         perror("read");
         free(employees);
@@ -155,3 +165,45 @@ int read_employees(int fd, struct dbheader_t *dbhdr, struct employee_t **employe
 }
 
 
+int add_employee(int fd, struct dbheader_t *dbhdr, struct employee_t **employees, char* addStr){
+    printf("%s\n", addStr);
+
+    int i = 0;
+    int newCount = 0;
+    struct employee_t *newEmployees = NULL;
+
+    char *name = strtok(addStr, ",");
+    char *address = strtok(NULL, ",");
+    if(address == NULL){
+        printf("Missing address!!\n");
+            return STATUS_ERROR;
+    }
+    if(*address == ' ') address++;
+    
+    char *hours = strtok(NULL, ",");
+    if(hours == NULL){
+        printf("Missing weekly hours data!!\n");
+        return STATUS_ERROR;
+    }
+    if(*hours == ' ') hours++;
+    
+    
+    newCount = dbhdr->count + 1;
+    newEmployees = realloc(*employees, sizeof(struct employee_t) * newCount);
+    if(newEmployees == NULL){
+        printf("Failed to realloc adding new employee. Try again!!\n");
+        return STATUS_ERROR;
+    }
+    
+    
+    strncpy(newEmployees[newCount - 1].name ,name, sizeof(newEmployees[newCount - 1].name));
+    strncpy(newEmployees[newCount - 1].address , address, sizeof(newEmployees[newCount - 1].address));
+    newEmployees[newCount - 1].hours = atoi(hours);
+    printf("Name: %s\nAddress: %s\nHours: %s\n", name, address, hours);
+    
+    *employees = newEmployees;
+    dbhdr->count = newCount;
+
+
+    return STATUS_GOOD;
+}

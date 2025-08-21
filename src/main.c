@@ -6,19 +6,20 @@
 #include <unistd.h>
 #include <stdlib.h>
 
-void programInstruction(char* argv[]){
-    printf("Instruction for %s, use these flags:\n", argv[0]);
-    printf("\t -n if you want to start a new file (optional)\n");
-    printf("\t -f </file_path <--- Mandatory!!\n");
-}
 
+
+void programInstruction(char* argv[]);
+void freeMemory(struct dbheader_t **header, struct employee_t **employee);
 
 int main(int argc, char* argv[]){
 
     int opt = 0;
-    char* fileOptions = "nf:";  
-    char * filepath = NULL;
+    char* fileOptions = "na:f:";  
+    char* filepath = NULL;
+    char* addStr = NULL;
     bool newfile = false;
+    bool addEmployee = false;
+    
     int dbfd = -1;
     struct dbheader_t *header = NULL;
     struct employee_t *employees = NULL;
@@ -34,9 +35,18 @@ int main(int argc, char* argv[]){
             case 'f':
                 filepath = optarg;
                 break;
+            case 'a':
+                addEmployee = true;
+                if(optarg == NULL){
+                    printf("Missing new employee details\n");
+                    programInstruction(argv);
+                    return -1;
+                }
+                addStr = optarg;   
+                break;
             case '?':
-                printf"Invalid option: %c\n", opt);
-                programInstruction();
+                printf("Invalid option: %c\n", opt);
+                programInstruction(argv);
                 return -1;
             default:
                 return -1;
@@ -71,24 +81,33 @@ int main(int argc, char* argv[]){
 
         if(validate_db_header(dbfd, &header) == STATUS_ERROR){
              printf("Failed to validate the header.\n");
+            freeMemory(&header, &employees);
+            close(dbfd);
             return -1;
         };
     }
 
     if(read_employees(dbfd, header, &employees) == STATUS_ERROR){
         printf("Couldn't read employees. \n");
-        free(employees);
-        emloyees = NULL;
-        free(header);
-        header = NULL;
+        close(dbfd);
+        freeMemory(&header, &employees);
         return -1;
+    }
+
+    if(addEmployee){
+        if(add_employee(dbfd, header, &employees, addStr) == STATUS_ERROR){
+            printf("Couldn't add employees. \n");
+            freeMemory(&header, &employees);
+            close(dbfd);
+            return -1; 
+        }
     }
 
 
     if(output_file(dbfd, header, employees) == STATUS_ERROR){
         printf("Didn't write to the file. An error occurred\n");
-        free(header);
-        free(employees);
+        freeMemory(&header, &employees);
+        close(dbfd);
         return -1;
     }
     printf("Newfile: %d\n", newfile);
@@ -96,4 +115,23 @@ int main(int argc, char* argv[]){
 
     return 0;
 }
+
+
+
+void programInstruction(char* argv[]){
+    printf("Instruction for %s, use these flags:\n", argv[0]);
+    printf("\t -f </file_path <--- Mandatory!!\n");
+    printf("\t -n if you want to start a new file \n");
+    printf("\t -a \"< First Name> <SurnameInitial.>, <Address>, <Weekly Hours>\" if you want to add a new employee \n");
+    printf("\t Add employee example: %s -f ./employeesDB.db -a \"John S., 123 smith ln, 38\n\"", argv[0]);
+}
+
+void freeMemory(struct dbheader_t **header, struct employee_t **employees){
+    free(*header);
+    free(*employees);
+    *header = NULL;
+    *employees = NULL;
+    return;
+}
+
 

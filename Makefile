@@ -14,7 +14,7 @@ OBJ = $(patsubst src/%.c, obj/%.o, $(SRC))
 
 run: clean default
 	./$(TARGET) -f ./mynewdb.db -n
-	./$(TARGET) -f ./mynewdb.db
+	./$(TARGET) -f ./mynewdb.db -a "John S., 123 what do I know, 38"
 
 default: $(TARGET)
 
