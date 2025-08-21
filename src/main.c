@@ -21,6 +21,7 @@ int main(int argc, char* argv[]){
     bool newfile = false;
     int dbfd = -1;
     struct dbheader_t *header = NULL;
+    struct employee_t *employees = NULL;
 
 
     while((opt = getopt(argc, argv, fileOptions)) != -1){
@@ -51,7 +52,7 @@ int main(int argc, char* argv[]){
             return -1;
         }
 
-        if((create_db_header(dbfd, &header)) == STATUS_ERROR){
+        if((create_db_header(&header)) == STATUS_ERROR){
             printf("Failed to create database header\n");
             return -1;
         }
@@ -71,7 +72,7 @@ int main(int argc, char* argv[]){
     }
 
 
-    if(output_file(dbfd, header) == STATUS_ERROR){
+    if(output_file(dbfd, header, employees) == STATUS_ERROR){
         printf("Didn't write to the file. An error occurred\n");
         free(header);
         return -1;

@@ -11,7 +11,7 @@
 
 
 
-int create_db_header(int fd, struct dbheader_t **headerOut){
+int create_db_header(struct dbheader_t **headerOut){
     struct dbheader_t *header = calloc(1, sizeof(struct dbheader_t));
     if(header == NULL){
         printf("Calloc failed to create db header\n");
@@ -84,7 +84,7 @@ int validate_db_header(int fd, struct dbheader_t **headerOut){
 
 
 
-int output_file(int fd, struct dbheader_t *dbhdr){
+int output_file(int fd, struct dbheader_t *dbhdr, struct  employee_t *employees){
     
     if(fd < 0){
         printf("Got a bad FD from the user while ouputting to file\n");
@@ -111,6 +111,6 @@ int output_file(int fd, struct dbheader_t *dbhdr){
 
 
 
-int read_employees(int fd, struct dbheader_t **headerOut, struct employee_t **employeesOut);
+int read_employees(int fd, struct dbheader_t *headerOut, struct employee_t **employees);
 
 
