@@ -165,14 +165,13 @@ int read_employees(int fd, struct dbheader_t *dbhdr, struct employee_t **employe
 }
 
 
-int add_employee(int fd, struct dbheader_t *dbhdr, struct employee_t **employees, char* addStr){
-    printf("%s\n", addStr);
+int add_employee(struct dbheader_t *dbhdr, struct employee_t **employees, char* addstring){
+    printf("%s\n", addstring);
 
-    int i = 0;
     int newCount = 0;
     struct employee_t *newEmployees = NULL;
 
-    char *name = strtok(addStr, ",");
+    char *name = strtok(addstring, ",");
     char *address = strtok(NULL, ",");
     if(address == NULL){
         printf("Missing address!!\n");
