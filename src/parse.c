@@ -118,12 +118,40 @@ int output_file(int fd, struct dbheader_t *dbhdr, struct  employee_t *employees)
 
 
 
-int read_employees(int fd, struct dbheader_t *headerOut, struct employee_t **employees){
-     if(employees == NULL){
+int read_employees(int fd, struct dbheader_t *dbhdr, struct employee_t **employeesOut){
+     if(employeesOut == NULL){
         printf("**employees == NULL is not a valid input for read_employees!\n");
         return STATUS_ERROR;
     }
+     if(fd < 0){
+        printf("Got a bad FD from the user while reading employees\n");
+        return STATUS_ERROR;
+    }
+
+    int count = dbhdr.count;
+
+   struct employee_t *employees = calloc(count, sizeof(employeesOut));
+    if(employees == NULL){
+        printf("Calloc failed in read_employees\n");
+        return STATUS_ERROR;
+    }
     
+    if((read(fd, employees, count * sizeof(employees))) == -1){:w
+        printf("Failed to read employees on file. \n");
+        perror("read");
+        free(employees);
+        employees = NULL;
+        return STATUS_ERROR;
+    }
+    
+    int i = 0;
+    for (; i < count; i++){
+            employees[i].hours = ntohl(employees[i].hours);
+    }
+
+    *employeesOut = employees;
+    return STATUS_GOOD;
+
 }
 
 

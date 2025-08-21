@@ -34,6 +34,10 @@ int main(int argc, char* argv[]){
             case 'f':
                 filepath = optarg;
                 break;
+            case '?':
+                printf"Invalid option: %c\n", opt);
+                programInstruction();
+                return -1;
             default:
                 return -1;
         }
@@ -71,10 +75,20 @@ int main(int argc, char* argv[]){
         };
     }
 
+    if(read_employees(dbfd, header, &employees) == STATUS_ERROR){
+        printf("Couldn't read employees. \n");
+        free(employees);
+        emloyees = NULL;
+        free(header);
+        header = NULL;
+        return -1;
+    }
+
 
     if(output_file(dbfd, header, employees) == STATUS_ERROR){
         printf("Didn't write to the file. An error occurred\n");
         free(header);
+        free(employees);
         return -1;
     }
     printf("Newfile: %d\n", newfile);
