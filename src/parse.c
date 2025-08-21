@@ -166,7 +166,9 @@ int read_employees(int fd, struct dbheader_t *dbhdr, struct employee_t **employe
 
 
 int add_employee(struct dbheader_t *dbhdr, struct employee_t **employees, char* addstring){
-    printf("%s\n", addstring);
+    if(dbhdr == NULL){
+        return STATUS_ERROR;
+    }
 
     int newCount = 0;
     struct employee_t *newEmployees = NULL;
