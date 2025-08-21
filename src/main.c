@@ -95,7 +95,7 @@ int main(int argc, char* argv[]){
     }
 
     if(addEmployee){
-        if(add_employee(dbfd, header, &employees, addStr) == STATUS_ERROR){
+        if(add_employee(header, &employees, addStr) == STATUS_ERROR){
             printf("Couldn't add employees. \n");
             freeMemory(&header, &employees);
             close(dbfd);
@@ -110,9 +110,11 @@ int main(int argc, char* argv[]){
         close(dbfd);
         return -1;
     }
+
     printf("Newfile: %d\n", newfile);
     printf("Filepath: %s\n", filepath);
-
+    freeMemory(&header, &employees);
+    close(dbfd);
     return 0;
 }
 
