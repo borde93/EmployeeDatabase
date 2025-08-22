@@ -93,6 +93,11 @@ int validate_db_header(int fd, struct dbheader_t **headerOut){
 
 
 int output_file(int fd, struct dbheader_t *dbhdr, struct  employee_t *employees){
+    if(dbhdr == NULL){
+        printf("NULL header reveived in output file!\n");
+        return STATUS_ERROR;
+    }
+
     if(fd < 0){
         printf("Got a bad FD from the user while ouputting to file\n");
         return STATUS_ERROR;
@@ -129,7 +134,8 @@ int output_file(int fd, struct dbheader_t *dbhdr, struct  employee_t *employees)
 
 
 int read_employees(int fd, struct dbheader_t *dbhdr, struct employee_t **employeesOut){
-     if(employeesOut == NULL){
+
+    if(employeesOut == NULL){
         printf("**employees == NULL is not a valid input for read_employees!\n");
         return STATUS_ERROR;
     }
@@ -166,10 +172,11 @@ int read_employees(int fd, struct dbheader_t *dbhdr, struct employee_t **employe
 
 
 int add_employee(struct dbheader_t *dbhdr, struct employee_t **employees, char* addstring){
-    if(dbhdr == NULL){
+    if(employees == NULL){
+        printf("Empty *employee[] in add_employee\n");
         return STATUS_ERROR;
     }
-
+    
     int newCount = 0;
     struct employee_t *newEmployees = NULL;
 

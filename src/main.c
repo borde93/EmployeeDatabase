@@ -26,22 +26,25 @@ int main(int argc, char* argv[]){
 
 
     while((opt = getopt(argc, argv, fileOptions)) != -1){
-
-
         switch(opt){
             case 'n':
                 newfile = true;
                 break;
             case 'f':
+                if(optarg == NULL){
+                    printf("Filepath is a required argument.\n");
+                    programInstruction(argv);
+                    return -1;
+                } 
                 filepath = optarg;
                 break;
             case 'a':
-                addEmployee = true;
                 if(optarg == NULL){
                     printf("Missing new employee details\n");
                     programInstruction(argv);
                     return -1;
                 }
+                addEmployee = true;
                 addStr = optarg;   
                 break;
             case '?':
@@ -53,11 +56,7 @@ int main(int argc, char* argv[]){
         }
     }
 
-    if(filepath == NULL){
-        printf("Filepath is a required argument.\n");
-        programInstruction(argv);
-        return 0;
-    }
+
 
     if(newfile == true){
         dbfd = create_db_file(filepath);
@@ -80,7 +79,7 @@ int main(int argc, char* argv[]){
         }
 
         if(validate_db_header(dbfd, &header) == STATUS_ERROR){
-             printf("Failed to validate the header.\n");
+            printf("Failed to validate the header.\n");
             freeMemory(&header, &employees);
             close(dbfd);
             return -1;
