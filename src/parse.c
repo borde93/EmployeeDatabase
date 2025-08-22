@@ -10,7 +10,17 @@
 #include "common.h"
 #include "parse.h"
 
-
+void list_employees(struct dbheader_t *dbhdr, struct employee_t *employees){
+    int i = 0;
+    printf("\n\n");
+    printf("Total number of employees: %d\n\n", dbhdr->count);
+    for(i = 0; i < dbhdr->count; i++){
+        printf("Employee %d\n", i);
+        printf("\tName: %s\n", employees[i].name);
+        printf("\tAddress: %s\n", employees[i].address);
+        printf("\tHours: %d\n", employees[i].hours);
+    }
+}
 
 int create_db_header(struct dbheader_t **headerOut){
     if(headerOut == NULL){

@@ -14,11 +14,12 @@ void freeMemory(struct dbheader_t **header, struct employee_t **employee);
 int main(int argc, char* argv[]){
 
     int opt = 0;
-    char* fileOptions = "na:f:";  
+    char* fileOptions = "lna:f:";  
     char* filepath = NULL;
     char* addStr = NULL;
     bool newfile = false;
     bool addEmployee = false;
+    bool list = false;
     
     int dbfd = -1;
     struct dbheader_t *header = NULL;
@@ -46,6 +47,9 @@ int main(int argc, char* argv[]){
                 }
                 addEmployee = true;
                 addStr = optarg;   
+                break;
+            case 'l':
+                list = true;
                 break;
             case '?':
                 printf("Invalid option: %c\n", opt);
@@ -102,6 +106,10 @@ int main(int argc, char* argv[]){
         }
     }
 
+    if(list){
+        list_employees(header, employees);
+
+    }
 
     if(output_file(dbfd, header, employees) == STATUS_ERROR){
         printf("Didn't write to the file. An error occurred\n");
@@ -110,8 +118,8 @@ int main(int argc, char* argv[]){
         return -1;
     }
 
-    printf("Newfile: %d\n", newfile);
-    printf("Filepath: %s\n", filepath);
+//   printf("Newfile: %d\n", newfile);
+//   printf("Filepath: %s\n", filepath);
     freeMemory(&header, &employees);
     close(dbfd);
     return 0;
