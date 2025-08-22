@@ -134,7 +134,9 @@ int output_file(int fd, struct dbheader_t *dbhdr, struct  employee_t *employees)
 
 
 int read_employees(int fd, struct dbheader_t *dbhdr, struct employee_t **employeesOut){
-
+    if(dbhdr == NULL){
+        return STATUS_ERROR;
+    }
     if(employeesOut == NULL){
         printf("**employees == NULL is not a valid input for read_employees!\n");
         return STATUS_ERROR;
@@ -176,7 +178,8 @@ int add_employee(struct dbheader_t *dbhdr, struct employee_t **employees, char* 
         printf("Empty *employee[] in add_employee\n");
         return STATUS_ERROR;
     }
-    
+    if(dbhdr == NULL) return STATUS_ERROR;
+    if(addstring == NULL) return STATUS_ERROR;
     int newCount = 0;
     struct employee_t *newEmployees = NULL;
 
