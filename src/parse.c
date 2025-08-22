@@ -11,6 +11,16 @@
 #include "parse.h"
 
 void list_employees(struct dbheader_t *dbhdr, struct employee_t *employees){
+    
+    if(dbhdr == NULL){
+        printf("dbhdr is a null pointer.\n");
+        return;
+    }
+    if(employees == NULL){
+        printf("employees is a NULL pointer\n");
+        return;
+    }
+
     int i = 0;
     printf("\n\n");
     printf("Total number of employees: %d\n\n", dbhdr->count);
