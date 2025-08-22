@@ -102,7 +102,6 @@ int output_file(int fd, struct dbheader_t *dbhdr, struct  employee_t *employees)
         printf("Got a bad FD from the user while ouputting to file\n");
         return STATUS_ERROR;
     }
-    
     int nEmployees = dbhdr->count;
 
     dbhdr->magic = htonl(dbhdr->magic);
@@ -135,10 +134,6 @@ int output_file(int fd, struct dbheader_t *dbhdr, struct  employee_t *employees)
 
 int read_employees(int fd, struct dbheader_t *dbhdr, struct employee_t **employeesOut){
     if(dbhdr == NULL){
-        return STATUS_ERROR;
-    }
-    if(employeesOut == NULL){
-        printf("**employees == NULL is not a valid input for read_employees!\n");
         return STATUS_ERROR;
     }
      if(fd < 0){
