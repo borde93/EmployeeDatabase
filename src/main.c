@@ -14,12 +14,15 @@ void freeMemory(struct dbheader_t **header, struct employee_t **employee);
 int main(int argc, char* argv[]){
 
     int opt = 0;
-    char* fileOptions = "lna:f:";  
+    char* fileOptions = "lr:na:f:";  
     char* filepath = NULL;
     char* addStr = NULL;
+    char* removeName = NULL;
+
     bool newfile = false;
     bool addEmployee = false;
     bool list = false;
+    bool remove = false;
     
     int dbfd = -1;
     struct dbheader_t *header = NULL;
@@ -50,6 +53,15 @@ int main(int argc, char* argv[]){
                 break;
             case 'l':
                 list = true;
+                break;
+            case 'r':
+                if(optarg == NULL){
+                    printf("Missing name of employee to be removed\n");
+                    programInstruction(argv);
+                    return -1;
+                }
+                remove = true;
+                removeName = optarg;
                 break;
             case '?':
                 printf("Invalid option: %c\n", opt);
@@ -110,7 +122,14 @@ int main(int argc, char* argv[]){
         list_employees(header, employees);
 
     }
-
+    if(remove){
+        if(remove_employee(header, &employees, removeName) == STATUS_ERROR){         
+            freeMemory(&header, &employees);
+            return -1;
+        }
+     
+    //    list_employees(header, employees);
+    }
     if(output_file(dbfd, header, employees) == STATUS_ERROR){
         printf("Didn't write to the file. An error occurred\n");
         freeMemory(&header, &employees);
@@ -131,7 +150,9 @@ void programInstruction(char* argv[]){
     printf("Instruction for %s, use these flags:\n", argv[0]);
     printf("\t -f </file_path <--- Mandatory!!\n");
     printf("\t -n if you want to start a new file \n");
+    printf("\t -l print a list of all employees \n");
     printf("\t -a \"< First Name> <SurnameInitial.>, <Address>, <Weekly Hours>\" if you want to add a new employee \n");
+    printf("\t -r \"<Firstname> <SurnameInitial.>\" if you want to remove an employee\n");
     printf("\t Add employee example: %s -f ./employeesDB.db -a \"John S., 123 smith ln, 38\n\"", argv[0]);
 }
 

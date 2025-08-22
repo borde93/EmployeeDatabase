@@ -18,6 +18,8 @@ run: clean default
 	./$(TARGET) -f ./mynewdb.db -a "Betty L., 123 Smithe st., 25"
 	./$(TARGET) -f ./mynewdb.db -a "Luffy P.K., 23 Ocean rd., 10"
 	./$(TARGET) -f ./mynewdb.db -l
+	./$(TARGET) -f ./mynewdb.db -r "Betty L."
+	./$(TARGET) -f ./mynewdb.db -l
 
 
 default: $(TARGET)
